@@ -23,7 +23,6 @@
  */
 - (void)sd_setHighlightedImageWithURL:(NSURL *)url;
 
-
 /**
  用“URL”设置UIView高亮显示”。异步操作
 

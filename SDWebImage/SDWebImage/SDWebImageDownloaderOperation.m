@@ -391,7 +391,6 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
                     image = [UIImage decodedImageWithImage:image];
                 }
             }
-
             if (CGSizeEqualToSize(image.size, CGSizeZero)) {
                 completionBlock(nil, nil, [NSError errorWithDomain:SDWebImageErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"Downloaded image has 0 pixels"}], YES);
             }
@@ -424,14 +423,6 @@ NSString *const SDWebImageDownloadFinishNotification = @"SDWebImageDownloadFinis
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
-    /**
-     1.NSURLRequestUseProtocolCachePolicy NSURLRequest 默认的cache policy，使用Protocol协议定义。
-     2.NSURLRequestReloadIgnoringCacheData 忽略缓存直接从原始地址下载。
-     3.NSURLRequestReturnCacheDataDontLoad 只使用cache数据，如果不存在cache，请求失败；用于没有建立网络连接离线模式
-     4.NSURLRequestReturnCacheDataElseLoad  只有在cache中不存在data时才从原始地址下载。
-     5.NSURLRequestReloadIgnoringLocalAndRemoteCacheData 忽略本地和远程的缓存数据，直接从原始地址下载，与NSURLRequestReloadIgnoringCacheData类似。
-     6.NSURLRequestReloadRevalidatingCacheData :验证本地数据与远程数据是否相同，如果不同则下载远程数据，否则使用本地数据
-     **/
     responseFromCached = NO; // If this method is called, it means the response wasn't read from cache
     if (self.request.cachePolicy == NSURLRequestReloadIgnoringLocalCacheData) {
         // Prevents caching of responses

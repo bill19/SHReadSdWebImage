@@ -9,22 +9,17 @@
 #import <Foundation/Foundation.h>
 #import "SDWebImageCompat.h"
 
-//SDImageCache - 异步处理内存缓存和磁盘缓存,不阻塞主线程
-
 typedef NS_ENUM(NSInteger, SDImageCacheType) {
     /**
      * The image wasn't available the SDWebImage caches, but was downloaded from the web.
-     * 不适用SDWebImage缓存 直接从weburl下载
      */
     SDImageCacheTypeNone,
     /**
      * The image was obtained from the disk cache.
-     * 图片是用disk缓存
      */
     SDImageCacheTypeDisk,
     /**
      * The image was obtained from the memory cache.
-     * 图片是用内存缓存
      */
     SDImageCacheTypeMemory
 };
@@ -38,52 +33,42 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
 /**
  * SDImageCache maintains a memory cache and an optional disk cache. Disk cache write operations are performed
  * asynchronous so it doesn’t add unnecessary latency to the UI.
- * SDImageCache 可以使用内存缓存和储存卡缓存
  */
 @interface SDImageCache : NSObject
 
 /**
  * Decompressing images that are downloaded and cached can improve performance but can consume lot of memory.
  * Defaults to YES. Set this to NO if you are experiencing a crash due to excessive memory consumption.
- *对下载和缓存的图像进行解压缩可以提高性能，但会消耗大量内存。
- *默认为“是”。如果由于内存消耗过多而导致崩溃，则将其设置为“否”。
  */
 @property (assign, nonatomic) BOOL shouldDecompressImages;
 
 /**
  *  disable iCloud backup [defaults to YES]
- 禁用iCloud备份[默认为yes ]
-
  */
 @property (assign, nonatomic) BOOL shouldDisableiCloud;
 
 /**
  * use memory cache [defaults to YES]
- 使用内存缓存[默认为yes ]
  */
 @property (assign, nonatomic) BOOL shouldCacheImagesInMemory;
 
 /**
  * The maximum "total cost" of the in-memory image cache. The cost function is the number of pixels held in memory.
- 内存中图像缓存的最大“总成本”。成本函数是保存在存储器中的像素数。
  */
 @property (assign, nonatomic) NSUInteger maxMemoryCost;
 
 /**
  * The maximum number of objects the cache should hold.
- * 缓存应该保存的最大对象数。
  */
 @property (assign, nonatomic) NSUInteger maxMemoryCountLimit;
 
 /**
  * The maximum length of time to keep an image in the cache, in seconds
- *在高速缓存中保持图像的最大时间，以秒为单位
  */
 @property (assign, nonatomic) NSInteger maxCacheAge;
 
 /**
  * The maximum size of the cache, in bytes.
- 高速缓存的最大大小，以字节为单位
  */
 @property (assign, nonatomic) NSUInteger maxCacheSize;
 
@@ -91,10 +76,6 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
  * Returns global shared cache instance
  *
  * @return SDImageCache global instance
-
- *返回全局共享缓存实例
- *
- *@返回SDIMAGECACH全局实例
  */
 + (SDImageCache *)sharedImageCache;
 
@@ -102,9 +83,6 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
  * Init a new cache store with a specific namespace
  *
  * @param ns The namespace to use for this cache store
- * init在缓存Store命名空间与特异性
- *
- * @ PARAM命名空间NS使用for this to the store缓存 存储到某个路径
  */
 - (id)initWithNamespace:(NSString *)ns;
 
@@ -123,10 +101,6 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
  * Useful if you want to bundle pre-loaded images with your app
  *
  * @param path The path to use for this read-only cache path
- *添加只读缓存路径以搜索由SimigaGache预先缓存的图像
- *如果您想将预加载的图像与应用程序捆绑在一起
- *
- *@ PARAM路径为只读高速缓存路径使用的路径
  */
 - (void)addReadOnlyCachePath:(NSString *)path;
 
@@ -135,10 +109,6 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
  *
  * @param image The image to store
  * @param key   The unique image cache key, usually it's image absolute URL
- *将图像存储到给定键的内存和磁盘缓存中。
- *
- *@ PARAM图像存储图像
- *@ PARAM键是唯一的图像缓存键，通常是图像绝对URL
  */
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key;
 
@@ -148,12 +118,6 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
  * @param image  The image to store
  * @param key    The unique image cache key, usually it's image absolute URL
  * @param toDisk Store the image to disk cache if YES
- *
- * 将图像存储到内存中，并在指定的键上选择磁盘缓存。
- *
- * @ PARAM image 存储图像
- * @ PARAM key 是唯一的图像缓存键，通常是图像绝对URL
- * @ PARAM-toDisk 如果是 图片 将图像存储到磁盘缓存，
  */
 - (void)storeImage:(UIImage *)image forKey:(NSString *)key toDisk:(BOOL)toDisk;
 
@@ -167,38 +131,21 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
  *                    to save quality and CPU
  * @param key         The unique image cache key, usually it's image absolute URL
  * @param toDisk      Store the image to disk cache if YES
- *
- *将图像存储到内存中，并在指定的键上选择磁盘缓存。
- *
- *@ PARAM image 存储图像
- *@ PARAM recalculate 指示是否可以使用IVIDEATA或从UII图中构建新数据
- *@ PARAM imageData 作为服务器返回的图像数据，该表示将用于磁盘存储
- *而不是将给定的图像对象按顺序转换成可存储/压缩的图像格式。
- *节省质量和CPU
- *@ PARAM key 是唯一的图像缓存键，通常是图像绝对URL
- *@ PARAM-toDisk 将图像存储到磁盘缓存，如果是
  */
 - (void)storeImage:(UIImage *)image recalculateFromImage:(BOOL)recalculate imageData:(NSData *)imageData forKey:(NSString *)key toDisk:(BOOL)toDisk;
 
 /**
  * Store image NSData into disk cache at the given key.
- *将图像NSATATE存储到给定的密钥的磁盘缓存中。
- *
  *
  * @param imageData The image data to store
- *@ PARAM IMADATA存储的图像数据
- * @param key The unique image cache key, usually it's image absolute URL
- *@ PARAM键是唯一的图像缓存键，通常是图像绝对URL
+ * @param key   The unique image cache key, usually it's image absolute URL
  */
 - (void)storeImageDataToDisk:(NSData *)imageData forKey:(NSString *)key;
 
 /**
  * Query the disk cache asynchronously.
- *异步查询磁盘缓存。
- *
  *
  * @param key The unique key used to store the wanted image
- *@ PARAM键：用于存储想要的图像的唯一密钥
  */
 - (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(SDWebImageQueryCompletedBlock)doneBlock;
 
@@ -210,22 +157,16 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
 - (UIImage *)imageFromMemoryCacheForKey:(NSString *)key;
 
 /**
- * Query the memory cache synchronously.
- *同步查询内存缓存。
- *
+ * Query the disk cache synchronously after checking the memory cache.
  *
  * @param key The unique key used to store the wanted image
- *@ PARAM键：用于存储想要的图像的唯一密钥
  */
 - (UIImage *)imageFromDiskCacheForKey:(NSString *)key;
 
-/***
- Remove the image from memory and disk cache synchronously
- *从内存和磁盘缓存同步删除图像
- *
+/**
+ * Remove the image from memory and disk cache synchronously
  *
  * @param key The unique image cache key
- *@ PARAM密钥的唯一图像缓存密钥
  */
 - (void)removeImageForKey:(NSString *)key;
 
@@ -239,58 +180,42 @@ typedef void(^SDWebImageCalculateSizeBlock)(NSUInteger fileCount, NSUInteger tot
 - (void)removeImageForKey:(NSString *)key withCompletion:(SDWebImageNoParamsBlock)completion;
 
 /**
- * Remove the image from memory and disk cache asynchronously
- *从内存和磁盘缓存异步删除图像
+ * Remove the image from memory and optionally disk cache asynchronously
  *
- *
- * @param key The unique image cache key
- *@ PARAM密钥的唯一图像缓存密钥
- * @param completion An block that should be executed after the image has been removed (optional)
- *@ PARAM完成图像移除后应该执行的块（可选）
+ * @param key      The unique image cache key
+ * @param fromDisk Also remove cache entry from disk if YES
  */
 - (void)removeImageForKey:(NSString *)key fromDisk:(BOOL)fromDisk;
 
 /**
  * Remove the image from memory and optionally disk cache asynchronously
- *从内存中删除图像，并异步地选择磁盘缓存。
  *
- *
- * @param key The unique image cache key
- *@ PARAM密钥的唯一图像缓存密钥
- * @param fromDisk Also remove cache entry from disk if YES
- 如果是的话，*@ PARAM OFFISH也从磁盘中删除缓存条目
- * @param completion An block that should be executed after the image has been removed (optional)
- *@ PARAM完成图像移除后应该执行的块（可选）
+ * @param key             The unique image cache key
+ * @param fromDisk        Also remove cache entry from disk if YES
+ * @param completion      An block that should be executed after the image has been removed (optional)
  */
 - (void)removeImageForKey:(NSString *)key fromDisk:(BOOL)fromDisk withCompletion:(SDWebImageNoParamsBlock)completion;
 
 /**
  * Clear all memory cached images
- 清理内存
  */
 - (void)clearMemory;
 
 /**
  * Clear all disk cached images. Non-blocking method - returns immediately.
- *清除所有磁盘缓存图像。非阻塞方法-立即返回。
- * @param completion An block that should be executed after cache expiration completes (optional)
- *@ PARAM完成缓存到期后应执行的一个块（可选）
+ * @param completion    An block that should be executed after cache expiration completes (optional)
  */
 - (void)clearDiskOnCompletion:(SDWebImageNoParamsBlock)completion;
 
 /**
  * Clear all disk cached images
- *清除所有磁盘缓存图像
  * @see clearDiskOnCompletion:
- ＊参见clearDiskOnCompletion：
  */
 - (void)clearDisk;
 
 /**
  * Remove all expired cached image from disk. Non-blocking method - returns immediately.
- *从磁盘中删除所有过期的缓存图像。非阻塞方法-立即返回。
  * @param completionBlock An block that should be executed after cache expiration completes (optional)
- *@ PARAM Curruton阻止在缓存到期完成后执行的块（可选）
  */
 - (void)cleanDiskWithCompletionBlock:(SDWebImageNoParamsBlock)completionBlock;
 
